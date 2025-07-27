@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f7f9fa;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        padding: 32px 28px 24px 28px;
+      }
+      h1 {
+        text-align: center;
+        color: #2d3748;
+        margin-bottom: 24px;
+      }
+      .generated-url {
+        background: #e6fffa;
+        color: #234e52;
+        border: 1px solid #b2f5ea;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 18px;
+        text-align: center;
+        font-size: 1.1em;
+        word-break: break-all;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      label {
+        font-weight: 500;
+        color: #4a5568;
+      }
+      input[type="text"] {
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+        font-size: 1em;
+        outline: none;
+        transition: border 0.2s;
+      }
+      input[type="text"]:focus {
+        border: 1.5px solid #3182ce;
+      }
+      button {
+        background: #3182ce;
+        color: #fff;
+        border: none;
+        padding: 10px 0;
+        border-radius: 5px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      button:hover {
+        background: #2563eb;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: #f9fafb;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      }
+      th, td {
+        padding: 10px 8px;
+        text-align: center;
+      }
+      th {
+        background: #e2e8f0;
+        color: #2d3748;
+        font-weight: 600;
+      }
+      tr:nth-child(even) {
+        background: #f1f5f9;
+      }
+      .short-link {
+        color: #3182ce;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .short-link:hover {
+        color: #2563eb;
+        text-decoration: underline;
+      }
+      @media (max-width: 700px) {
+        .container {
+          padding: 16px 4vw 18px 4vw;
+        }
+        table, thead, tbody, th, td, tr {
+          font-size: 0.97em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔗 URL Shortener</h1>
+      <% if (locals.id) { %>
+        <div class="generated-url">
+          URL Generated: 
+          <a class="short-link" href="http://localhost:8001/url/<%= id %>" target="_blank">
+            http://localhost:8001/url/<%= id %>
+          </a>
+        </div>
+      <% } %>
+      <form method="POST" action="/url">
+        <label for="url-input">Enter Your Original URL</label>
+        <input id="url-input" type="text" name="url" placeholder="https://example.com" required />
+        <button type="submit">Generate</button>
+      </form>
+      <% if (locals.urls) { %>
+        <table>
+          <thead>
+            <tr>
+              <th>S. No</th>
+              <th>ShortID</th>
+              <th>Redirect</th>
+              <th>Clicks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% urls.forEach((url, index) => { %>
+  <tr>
+    <td><%= index + 1 %></td>
+    <td><%= url.shortId %></td>
+    <td>
+      <a class="short-link" href="http://localhost:8001/url/<%= url.shortId %>" target="_blank">
+        http://localhost:8001/url/<%= url.shortId %>
+      </a>
+    </td>
+    <td><%= url.visitHistory.length %></td>
+    <td>
+      <form method="POST" action="/url/delete/<%= url.shortId %>" style="display:inline;">
+        <button type="submit" style="background:#e53e3e;color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:0.95em;">
+          Delete
+        </button>
+      </form>
+    </td>
+  </tr>
+<% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </body>
+</html>
