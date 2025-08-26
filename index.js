@@ -4,6 +4,8 @@ const cookieParser = require("cookie-parser");
 const { connectToMongoDB } = require("./connect");
 const { restrictToLoggedinUserOnly, checkAuth } = require("./middlewares/auth");
 const URL = require("./models/url");
+require('dotenv').config()
+
 
 const urlRoute = require("./routes/url");
 const staticRoute = require("./routes/staticRouter");
